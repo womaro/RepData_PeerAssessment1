@@ -5,21 +5,46 @@ output:
     keep_md: true
 ---
 
+### Technical part, library load etc. 
 
-## Loading and preprocessing the data
+```{r,echo=TRUE,results='hide', message=FALSE, warning=FALSE}
+library(utils)
+library(dplyr)
+```
 
-
-
-## What is mean total number of steps taken per day?
-
-
-
-## What is the average daily activity pattern?
+### Loading and preprocessing the data
 
 
+```{r,echo=TRUE,results='hide', message=FALSE, warning=FALSE}
+data_source <- "https://d396qusza40orc.cloudfront.net/repdata%2Fdata%2Factivity.zip"
+data_dest <- paste(getwd(), "/activity.zip", sep = "")
+download.file(data_source, data_dest)
+unzip(data_dest)
+data_read <- paste(getwd(), "/activity.csv", sep = "")
 
-## Imputing missing values
+base_data <- read.csv(data_read, header = TRUE, sep = ",")
+
+```
+Lets check if data were loaded properly:
+
+```{r}
+head(base_data)
+```
+
+### What is mean total number of steps taken per day?
+
+```{r}
+
+
+```
+
+
+### What is the average daily activity pattern?
 
 
 
-## Are there differences in activity patterns between weekdays and weekends?
+### Imputing missing values
+
+
+
+### Are there differences in activity patterns between weekdays and weekends?

@@ -6,3 +6,5 @@
 .instruction_fig
 RepData_PeerAssess*
 activity.zip
+*.zip
+*.csv
