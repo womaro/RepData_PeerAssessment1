@@ -30,18 +30,64 @@ Lets check if data were loaded properly:
 ```{r}
 head(base_data)
 ```
+And now remove "NA" rows:
+
+```{r}
+base_data <- na.omit(base_data)
+```
+so finally data looks like:
+
+```{r}
+head(base_data)
+```
 
 ### What is mean total number of steps taken per day?
 
 ```{r}
+total_per_day <- base_data %>% group_by(date) %>% summarise(sum = sum(steps))
+total_per_day
+```
 
+Now lets look and examine histogram of our total data:
+
+```{r}
+hist(total_per_day$sum, 
+     main="Number of steps per day", 
+     xlab = "Total number of steps per day", 
+     ylab = "Frequency", 
+     col="darkgreen", 
+     freq = TRUE)
 
 ```
 
+and following that mean and median of total number of steps taken each day:
+
+```{r}
+mean(total_per_day$sum)
+median(total_per_day$sum)
+```
 
 ### What is the average daily activity pattern?
 
+```{r}
+daily_pattern <- base_data %>% group_by(interval) %>% summarise(mean = mean(steps))
+```
 
+```{r}
+daily_pattern
+```
+
+```{r}
+plot(daily_pattern$interval, daily_pattern$mean, type = "l", main = "Avarage number of steps across a day in 5-mins intervals", xlab = "5 min intervals", ylab = "Avg number of steps", col="darkgreen")
+
+```
+
+The 5-mins interval, during which on avarage ther biggest number of steps is taken is as following:
+
+```{r}
+daily_pattern[daily_pattern$mean == max(daily_pattern$mean),]
+
+```
 
 ### Imputing missing values
 
