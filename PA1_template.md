@@ -46,13 +46,13 @@ And now remove "NA" rows:
 
 
 ```r
-base_data <- na.omit(base_data)
+base_data_nona <- na.omit(base_data)
 ```
 so finally data looks like:
 
 
 ```r
-head(base_data)
+head(base_data_nona)
 ```
 
 ```
@@ -69,7 +69,7 @@ head(base_data)
 
 
 ```r
-total_per_day <- base_data %>% group_by(date) %>% summarise(sum = sum(steps))
+total_per_day <- base_data_nona %>% group_by(date) %>% summarise(sum = sum(steps))
 total_per_day
 ```
 
@@ -127,7 +127,7 @@ median(total_per_day$sum)
 
 
 ```r
-daily_pattern <- base_data %>% group_by(interval) %>% summarise(mean = mean(steps))
+daily_pattern <- base_data_nona %>% group_by(interval) %>% summarise(mean = mean(steps))
 ```
 
 
@@ -152,14 +152,16 @@ daily_pattern
 ## # ... with 278 more rows
 ```
 
+Now, lets see how does it look on plot:
+
 
 ```r
-plot(daily_pattern$interval, daily_pattern$mean, type = "l", main = "Avarage number of steps across a day in 5-mins intervals", xlab = "5 min intervals", ylab = "Avg number of steps", col="darkgreen")
+plot(daily_pattern$interval, daily_pattern$mean, type = "l", main = "Avarage number of steps across a day in 5-mins intervals", xlab = "Minutes", ylab = "Avg number of steps", col="darkgreen")
 ```
 
 ![](PA1_template_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
-The 5-mins interval, during which on avarage ther biggest number of steps is taken is as following:
+The 5-mins interval, during which on average ther biggest number of steps is taken is as following:
 
 
 ```r
@@ -174,7 +176,23 @@ daily_pattern[daily_pattern$mean == max(daily_pattern$mean),]
 ```
 
 ### Imputing missing values
+Lets start witch checking how many missing values do we have in our data set:
 
+
+```r
+summary(base_data)
+```
+
+```
+##      steps            date              interval     
+##  Min.   :  0.00   Length:17568       Min.   :   0.0  
+##  1st Qu.:  0.00   Class :character   1st Qu.: 588.8  
+##  Median :  0.00   Mode  :character   Median :1177.5  
+##  Mean   : 37.38                      Mean   :1177.5  
+##  3rd Qu.: 12.00                      3rd Qu.:1766.2  
+##  Max.   :806.00                      Max.   :2355.0  
+##  NA's   :2304
+```
 
 
 ### Are there differences in activity patterns between weekdays and weekends?
