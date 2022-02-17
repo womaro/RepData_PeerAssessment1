@@ -10,6 +10,7 @@ output:
 ```{r,echo=TRUE,results='hide', message=FALSE, warning=FALSE}
 library(utils)
 library(dplyr)
+library(ggplot2)  
 ```
 
 ### Loading and preprocessing the data
@@ -28,7 +29,7 @@ base_data <- read.csv(data_read, header = TRUE, sep = ",")
 Lets check if data were loaded properly:
 
 ```{r}
-head(base_data)
+head(base_data, 1000)
 ```
 And now remove "NA" rows:
 
@@ -100,10 +101,54 @@ summary(base_data)
 
 As we see, we have 2304 rows with missing value on steps variable. 
 
-Lets replace NAs with mean for day, when they occurred:
+Lets replace NAs with mean for steps:
 
 ```{r}
-total_per_day <- base_data %>% group_by(date) %>% summarise(sum = sum(steps))
+NATomean <- function(x) replace(x, is.na(x), mean(x, na.rm = TRUE))
+base_data_noNA <- replace(base_data, TRUE, lapply(base_data, NATomean))
+head(base_data_noNA, 10)
+summary(base_data_noNA)
 ```
 
+As a results, there is no NA values. Histogram of such data is following:
+
+```{r}
+total_per_day_noNA <- base_data_noNA %>% group_by(date) %>% summarise(sum = sum(steps))
+total_per_day_noNA
+```
+
+Now lets look and examine histogram of our total data:
+
+```{r}
+hist(total_per_day_noNA$sum, 
+     main="Number of steps per day", 
+     xlab = "Total number of steps per day", 
+     ylab = "Frequency", 
+     col="darkgreen", 
+     freq = TRUE)
+
+mean(total_per_day_noNA$sum)
+median(total_per_day_noNA$sum)
+```
+
+Obviously, we have more often occurrences on histogram, as by imputing NA values we have more observations, that impacts histogram data. As we are using mean for replacement, there is no effect on final data, but median is now same as mean, that is also expected. 
+
 ### Are there differences in activity patterns between weekdays and weekends?
+
+Lets take data with imputed missing values to validate whenever there is difference in behaviour between weekdays and weekend days. 
+First, lets add weekday column, that will differentiate between days of the week and evaluate if this is weekend or regular week day. 
+
+```{r}
+base_data_noNA <- base_data_noNA %>% mutate(weekday = factor(weekdays(as.Date(date)))) %>% mutate(is_weekend = factor(ifelse(weekdays(as.Date(date)) %in% c("Saturday", "Sunday"), "weekend", "weekday")))
+is.factor(base_data_noNA$is_weekend)
+```
+Now, lets plot based on is_weekend factor variable:
+
+```{r}
+daily_pattern2 <- base_data_noNA %>% group_by(interval, is_weekend) %>% summarise(mean = mean(steps))
+
+p <- ggplot(daily_pattern2) + aes(interval, mean) 
+p + geom_line() +  facet_grid(rows = vars(is_weekend))
+```
+
+Following plots, we can conclude, that weekend activity is more evenly distributed during a day, whereas weekday has one high peak. 
