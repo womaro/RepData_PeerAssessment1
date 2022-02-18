@@ -29,7 +29,7 @@ base_data <- read.csv(data_read, header = TRUE, sep = ",")
 Lets check if data were loaded properly:
 
 ```{r}
-head(base_data, 1000)
+head(base_data, 10)
 ```
 And now remove "NA" rows:
 

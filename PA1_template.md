@@ -1325,3 +1325,4 @@ p + geom_line() +  facet_grid(rows = vars(is_weekend))
 
 ![](PA1_template_files/figure-html/unnamed-chunk-18-1.png)<!-- -->
 
+Following plots, we can conclude, that weekend activity is more evenly distributed during a day, whereas weekday has one high peak. 
